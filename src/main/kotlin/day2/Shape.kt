@@ -15,9 +15,11 @@ enum class Shape(val score: Int, vararg val encryptedAs: String) {
     };
 
     abstract val beats: Shape
+
     companion object {
         fun byEncrypted(encrypted: String): Shape {
-            return Shape.values().find { it.encryptedAs.contains(encrypted) } ?: throw IllegalArgumentException("No shape found for $encrypted")
+            return Shape.values().find { it.encryptedAs.contains(encrypted) }
+                ?: throw IllegalArgumentException("No shape found for $encrypted")
         }
     }
 
@@ -26,6 +28,14 @@ enum class Shape(val score: Int, vararg val encryptedAs: String) {
             this == shape -> Result.DRAW
             this.beats == shape -> Result.WIN
             else -> Result.LOSE
+        }
+    }
+
+    fun findOtherPart(otherMove: Result): Shape {
+        return when (otherMove) {
+            Result.DRAW -> this
+            Result.LOSE -> beats
+            Result.WIN -> Shape.values().find { it.beats == this } ?: throw IllegalArgumentException("No shape found for $this")
         }
     }
 
