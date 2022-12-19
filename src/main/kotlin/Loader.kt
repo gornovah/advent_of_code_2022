@@ -1,10 +1,11 @@
 import java.io.FileNotFoundException
+import java.io.InputStream
 import java.util.Optional.ofNullable
 
-fun load(pathToResource: String): List<String> {
-    val resourceAsStream =
-        ofNullable(Unit.javaClass.getResourceAsStream(pathToResource))
-        .orElseThrow { FileNotFoundException("File for Resource at $pathToResource could not be found!") }
+private fun String.getResourceAsStream(): InputStream =
+    ofNullable(Unit.javaClass.getResourceAsStream(this))
+        .orElseThrow { FileNotFoundException("File for Resource at $this could not be found!") }
+fun load(pathToResource: String): List<String> =
+    pathToResource.getResourceAsStream().bufferedReader().readLines()
 
-    return resourceAsStream.bufferedReader().readLines()
-}
+fun loadString(pathToResource: String): String = pathToResource.getResourceAsStream().bufferedReader().readText().trimEnd()
